@@ -1,31 +1,31 @@
 /*
-* Класс-фигура. Представляет собой форму и соответствующий ей двумерный массив с координатами Х и У.
+* РљР»Р°СЃСЃ-С„РёРіСѓСЂР°. РџСЂРµРґСЃС‚Р°РІР»СЏРµС‚ СЃРѕР±РѕР№ С„РѕСЂРјСѓ Рё СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёР№ РµР№ РґРІСѓРјРµСЂРЅС‹Р№ РјР°СЃСЃРёРІ СЃ РєРѕРѕСЂРґРёРЅР°С‚Р°РјРё РҐ Рё РЈ.
 * */
 
-public class Shape
+class Shape
 {
-    public ShapeForm currentForm; // текущая форма
-    public int[][] coordinates; // массив с координатами квадратов формы
+    ShapeForm currentForm; // С‚РµРєСѓС‰Р°СЏ С„РѕСЂРјР°
+    private int[][] coordinates; // РјР°СЃСЃРёРІ СЃ РєРѕРѕСЂРґРёРЅР°С‚Р°РјРё РєРІР°РґСЂР°С‚РѕРІ С„РѕСЂРјС‹
 
-    // в конструкторе происходит инициализация массива координат и фигуре задаётся пустая форма
-    public Shape()
+    // РІ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРµ РїСЂРѕРёСЃС…РѕРґРёС‚ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РјР°СЃСЃРёРІР° РєРѕРѕСЂРґРёРЅР°С‚ Рё С„РёРіСѓСЂРµ Р·Р°РґР°С‘С‚СЃСЏ РїСѓСЃС‚Р°СЏ С„РѕСЂРјР°
+    Shape()
     {
         coordinates = new int[Tetris.MAX_SIZE][2];
-        setShape(ShapeForm.EmptyShape);
+        setShape();
     }
 
-    // метод задаёт форму для фигуры, меняя текущий массив координат формы на нужный.
-    public void setShape(ShapeForm shape)
+    // РјРµС‚РѕРґ Р·Р°РґР°С‘С‚ С„РѕСЂРјСѓ РґР»СЏ С„РёРіСѓСЂС‹, РјРµРЅСЏСЏ С‚РµРєСѓС‰РёР№ РјР°СЃСЃРёРІ РєРѕРѕСЂРґРёРЅР°С‚ С„РѕСЂРјС‹ РЅР° РЅСѓР¶РЅС‹Р№.
+    private void setShape()
     {
         for (int i = 0; i < Tetris.MAX_SIZE; i++) {
-            System.arraycopy(shape.coordinates[i], 0, coordinates[i], 0, 2);
+            System.arraycopy(ShapeForm.EmptyShape.coordinates[i], 0, coordinates[i], 0, 2);
         }
 
-        currentForm = shape;
+        currentForm = ShapeForm.EmptyShape;
     }
 
-    // метод генерирует случайную форму, кроме пустой
-    public void getRandomForm()
+    // РјРµС‚РѕРґ РіРµРЅРµСЂРёСЂСѓРµС‚ СЃР»СѓС‡Р°Р№РЅСѓСЋ С„РѕСЂРјСѓ, РєСЂРѕРјРµ РїСѓСЃС‚РѕР№
+    void getRandomForm()
     {
         int r = (int) (1 + Math.random() * 7);
         ShapeForm[] shapes = ShapeForm.values();
@@ -33,8 +33,8 @@ public class Shape
         currentForm = shapes[r];
     }
 
-    // метод вращает фигуру вокруг оси по направлению часовой стрелки.
-    public Shape turn()
+    // РјРµС‚РѕРґ РІСЂР°С‰Р°РµС‚ С„РёРіСѓСЂСѓ РІРѕРєСЂСѓРі РѕСЃРё РїРѕ РЅР°РїСЂР°РІР»РµРЅРёСЋ С‡Р°СЃРѕРІРѕР№ СЃС‚СЂРµР»РєРё.
+    Shape turn()
     {
         Shape result = new Shape();
         result.currentForm = currentForm;
@@ -47,8 +47,8 @@ public class Shape
         return result;
     }
 
-    // метод находит верхний квадрат фигуры для правильного отображения при её создании.
-    public int minY()
+    // РјРµС‚РѕРґ РЅР°С…РѕРґРёС‚ РІРµСЂС…РЅРёР№ РєРІР°РґСЂР°С‚ С„РёРіСѓСЂС‹ РґР»СЏ РїСЂР°РІРёР»СЊРЅРѕРіРѕ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РїСЂРё РµС‘ СЃРѕР·РґР°РЅРёРё.
+    int minY()
     {
         int m = coordinates[0][1];
 
@@ -59,7 +59,7 @@ public class Shape
         return m;
     }
 
-    // методы задают/получают координаты Х и У выбранного квадрата.
+    // РјРµС‚РѕРґС‹ Р·Р°РґР°СЋС‚/РїРѕР»СѓС‡Р°СЋС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ РҐ Рё РЈ РІС‹Р±СЂР°РЅРЅРѕРіРѕ РєРІР°РґСЂР°С‚Р°.
     private void setX(int index, int x)
     {
         coordinates[index][0] = x;
@@ -70,12 +70,12 @@ public class Shape
         coordinates[index][1] = y;
     }
 
-    public int getX(int index)
+    int getX(int index)
     {
         return coordinates[index][0];
     }
 
-    public int getY(int index)
+    int getY(int index)
     {
         return coordinates[index][1];
     }

@@ -8,12 +8,12 @@ import java.io.IOException;
 
 class MyFrame extends JFrame
 {
-    public MyFrame()
+    private MyFrame()
     {
         Tetris tetris = new Tetris();
         add(tetris);
         setTitle("Game \"Tetris\"");
-        setBounds(0, 0, 580, 555);
+        setBounds(0, 0, 380, 340);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
     }
@@ -28,25 +28,23 @@ class MyFrame extends JFrame
 
 public class Tetris extends JPanel
 {
-    public static final int MAX_SIZE = 6; // максимальное кол-во точек в фигуре
-    private static final int BOARD_WIDTH = 25;
-    private static final int BOARD_HEIGHT = 35;
+    static final int MAX_SIZE = 6; // РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»-РІРѕ С‚РѕС‡РµРє РІ С„РёРіСѓСЂРµ
+    private static final int BOARD_WIDTH = 15;
+    private static final int BOARD_HEIGHT = 20;
     private static final int SQUARE_SIZE = 15;
-    private BufferedImage gameOver = null;
 
     private Timer tmDraw;
     private boolean isFell = false;
     private boolean isStarted = false;
     private boolean game_is_over = false;
-    private int curX = 0; // положение текущей фигуры на доске
+    private int curX = 0; // РїРѕР»РѕР¶РµРЅРёРµ С‚РµРєСѓС‰РµР№ С„РёРіСѓСЂС‹ РЅР° РґРѕСЃРєРµ
     private int curY = 0;
-    private int score = 0; // считается как число удалённых квадратов (30 за линию)
+    private int score = 0; // СЃС‡РёС‚Р°РµС‚СЃСЏ РєР°Рє С‡РёСЃР»Рѕ СѓРґР°Р»С‘РЅРЅС‹С… РєРІР°РґСЂР°С‚РѕРІ (30 Р·Р° Р»РёРЅРёСЋ)
     private Shape currentShape;
-    private ShapeForm[] forms; //массив форм фигур, упавших на доску
+    private ShapeForm[] forms; //РјР°СЃСЃРёРІ С„РѕСЂРј С„РёРіСѓСЂ, СѓРїР°РІС€РёС… РЅР° РґРѕСЃРєСѓ
     private JLabel lb;
-    private JButton btn1, btn2;
 
-    public Tetris()
+    Tetris()
     {
         tmDraw = new Timer(300, e -> {
             if (isFell) {
@@ -60,23 +58,21 @@ public class Tetris extends JPanel
 
         lb = new JLabel("Score: " + score);
         lb.setForeground(Color.DARK_GRAY);
-        lb.setFont(new Font("comic sans MS", 0, 30));
-        lb.setBounds(410, 450, 130, 50);
+        lb.setFont(new Font("comic sans MS", Font.PLAIN, 16));
+        lb.setBounds(243, 130, 130, 40);
         add(lb);
 
-        btn1 = new JButton("NEW GAME");
+        JButton btn1 = new JButton("New Game");
         btn1.setForeground(new Color(47, 126, 154));
-        btn1.setFont(new Font("comic sans MS", 0, 16));
-        btn1.setBounds(410, 30, 130, 50);
-        btn1.addActionListener(arg0 -> {
-            start();
-        });
+        btn1.setFont(new Font("comic sans MS", Font.PLAIN, 14));
+        btn1.setBounds(243, 10, 105, 30);
+        btn1.addActionListener(arg0 -> start());
         add(btn1);
 
-        btn2 = new JButton("EXIT");
+        JButton btn2 = new JButton("Exit");
         btn2.setForeground(new Color(232, 95, 76));
-        btn2.setFont(new Font("comic sans MS", 0, 16));
-        btn2.setBounds(410, 100, 130, 50);
+        btn2.setFont(new Font("comic sans MS", Font.PLAIN, 14));
+        btn2.setBounds(243, 260, 105, 30);
         btn2.addActionListener(arg0 -> System.exit(0));
         add(btn2);
 
@@ -113,8 +109,8 @@ public class Tetris extends JPanel
         });
     }
 
-    // начало игры
-    public void start()
+    // РЅР°С‡Р°Р»Рѕ РёРіСЂС‹
+    private void start()
     {
         grabFocus();
         game_is_over = false;
@@ -127,7 +123,7 @@ public class Tetris extends JPanel
         tmDraw.start();
     }
 
-    // очищает доску (заполняет пустыми фигурами)
+    // РѕС‡РёС‰Р°РµС‚ РґРѕСЃРєСѓ (Р·Р°РїРѕР»РЅСЏРµС‚ РїСѓСЃС‚С‹РјРё С„РёРіСѓСЂР°РјРё)
     private void clearBoard()
     {
         for (int i = 0; i < BOARD_HEIGHT * BOARD_WIDTH; i++) {
@@ -135,8 +131,8 @@ public class Tetris extends JPanel
         }
     }
 
-    // создаёт новую фигуру и помещает в позицию начала падения
-    public void newShape()
+    // СЃРѕР·РґР°С‘С‚ РЅРѕРІСѓСЋ С„РёРіСѓСЂСѓ Рё РїРѕРјРµС‰Р°РµС‚ РІ РїРѕР·РёС†РёСЋ РЅР°С‡Р°Р»Р° РїР°РґРµРЅРёСЏ
+    private void newShape()
     {
         currentShape.getRandomForm();
         curX = BOARD_WIDTH / 2;
@@ -148,14 +144,14 @@ public class Tetris extends JPanel
         }
     }
 
-    // проверяет есть ли куда падать текущей фигуре и заставляет падать
+    // РїСЂРѕРІРµСЂСЏРµС‚ РµСЃС‚СЊ Р»Рё РєСѓРґР° РїР°РґР°С‚СЊ С‚РµРєСѓС‰РµР№ С„РёРіСѓСЂРµ Рё Р·Р°СЃС‚Р°РІР»СЏРµС‚ РїР°РґР°С‚СЊ
     private void oneLineDown()
     {
         if (!tryMove(currentShape, curX, curY - 1)) shapeFalled();
     }
 
-    // вызывается, если фигура упала
-    // добавляет фигуру в массив упавших, вызывает проверку заполненных линий и новую фигуру по завершению
+    // РІС‹Р·С‹РІР°РµС‚СЃСЏ, РµСЃР»Рё С„РёРіСѓСЂР° СѓРїР°Р»Р°
+    // РґРѕР±Р°РІР»СЏРµС‚ С„РёРіСѓСЂСѓ РІ РјР°СЃСЃРёРІ СѓРїР°РІС€РёС…, РІС‹Р·С‹РІР°РµС‚ РїСЂРѕРІРµСЂРєСѓ Р·Р°РїРѕР»РЅРµРЅРЅС‹С… Р»РёРЅРёР№ Рё РЅРѕРІСѓСЋ С„РёРіСѓСЂСѓ РїРѕ Р·Р°РІРµСЂС€РµРЅРёСЋ
     private void shapeFalled()
     {
         for (int i = 0; i < Tetris.MAX_SIZE; i++) {
@@ -171,7 +167,7 @@ public class Tetris extends JPanel
         }
     }
 
-    // отрисовывает квадраты для форм
+    // РѕС‚СЂРёСЃРѕРІС‹РІР°РµС‚ РєРІР°РґСЂР°С‚С‹ РґР»СЏ С„РѕСЂРј
     private void drawSquare(Graphics gr, int x, int y)
     {
         gr.setColor(new Color(232, 95, 76));
@@ -189,18 +185,18 @@ public class Tetris extends JPanel
         super.paint(gr);
 
         gr.setColor(new Color(47, 126, 154));
-        gr.fillRect(0, 0, 375, 526);
+        gr.fillRect(0, 0, 226, 301);
 
         gr.setColor(new Color(155, 155, 155));
-        for (int i = 0; i <= BOARD_WIDTH; i++) // колодец 30 в ширину, 40 в высоту, клетка 10 на 10
+        for (int i = 0; i <= BOARD_WIDTH; i++) // РєРѕР»РѕРґРµС† BOARD_HEIGHT РІ РІС‹СЃРѕС‚Сѓ, BOARD_WIDTH РІ С€РёСЂРёРЅСѓ, РєР»РµС‚РєР° 10 РЅР° 10
         {
-            gr.drawLine(i * SQUARE_SIZE, 0, i * SQUARE_SIZE, 526);
+            gr.drawLine(i * SQUARE_SIZE, 0, i * SQUARE_SIZE, 301);
             for (int j = 0; j <= BOARD_HEIGHT; j++) {
-                gr.drawLine(0, j * SQUARE_SIZE, 375, j * SQUARE_SIZE);
+                gr.drawLine(0, j * SQUARE_SIZE, 225, j * SQUARE_SIZE);
             }
         }
 
-        for (int i = 0; i < BOARD_HEIGHT; i++) { // отрисовка упавших фигур
+        for (int i = 0; i < BOARD_HEIGHT; i++) { // РѕС‚СЂРёСЃРѕРІРєР° СѓРїР°РІС€РёС… С„РёРіСѓСЂ
             for (int j = 0; j < BOARD_WIDTH; ++j) {
                 ShapeForm shape = shapeBelow(j, BOARD_HEIGHT - i - 1);
 
@@ -210,7 +206,7 @@ public class Tetris extends JPanel
             }
         }
 
-        if (currentShape.currentForm != ShapeForm.EmptyShape) { // отрисовка падающей фигуры
+        if (currentShape.currentForm != ShapeForm.EmptyShape) { // РѕС‚СЂРёСЃРѕРІРєР° РїР°РґР°СЋС‰РµР№ С„РёРіСѓСЂС‹
             for (int i = 0; i < Tetris.MAX_SIZE; ++i) {
                 int x = curX + currentShape.getX(i);
                 int y = curY - currentShape.getY(i);
@@ -220,7 +216,7 @@ public class Tetris extends JPanel
 
         if (game_is_over){
             try {
-                gameOver = ImageIO.read(getClass().getResourceAsStream("/end_game.png"));
+                BufferedImage gameOver = ImageIO.read(getClass().getResourceAsStream("/end_game.png"));
                 gr.drawImage(gameOver, 0, 0, null);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -228,8 +224,8 @@ public class Tetris extends JPanel
         }
     }
 
-    // отвечает за передвижение текущей фигуры и проверяет его возможность, а именно:
-    // не произойдёт ли столкновения с границами доски или упавшими фигурами
+    // РѕС‚РІРµС‡Р°РµС‚ Р·Р° РїРµСЂРµРґРІРёР¶РµРЅРёРµ С‚РµРєСѓС‰РµР№ С„РёРіСѓСЂС‹ Рё РїСЂРѕРІРµСЂСЏРµС‚ РµРіРѕ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ, Р° РёРјРµРЅРЅРѕ:
+    // РЅРµ РїСЂРѕРёР·РѕР№РґС‘С‚ Р»Рё СЃС‚РѕР»РєРЅРѕРІРµРЅРёСЏ СЃ РіСЂР°РЅРёС†Р°РјРё РґРѕСЃРєРё РёР»Рё СѓРїР°РІС€РёРјРё С„РёРіСѓСЂР°РјРё
     private boolean tryMove(Shape shape, int newX, int newY)
     {
         for (int i = 0; i < MAX_SIZE; ++i) {
@@ -247,7 +243,7 @@ public class Tetris extends JPanel
         return true;
     }
 
-    // по нажатию "вниз" спускает текущую фигуру по оси Y на сколько это возможно
+    // РїРѕ РЅР°Р¶Р°С‚РёСЋ "РІРЅРёР·" СЃРїСѓСЃРєР°РµС‚ С‚РµРєСѓС‰СѓСЋ С„РёРіСѓСЂСѓ РїРѕ РѕСЃРё Y, РїРѕРєР° РѕРЅР° РЅРµ СЃС‚РѕР»РєРЅРµС‚СЃСЏ СЃ СѓР¶Рµ Р»РµР¶Р°С‰РµР№ Р»РёР±Рѕ СЃ РґРЅРѕРј РєРѕР»РѕРґС†Р°
     private void throwDown()
     {
         int newY = curY;
@@ -258,13 +254,13 @@ public class Tetris extends JPanel
         shapeFalled();
     }
 
-    // проверяет какая фигура снизу по курсу
+    // РїСЂРѕРІРµСЂСЏРµС‚ РєР°РєР°СЏ С„РёРіСѓСЂР° СЃРЅРёР·Сѓ РїРѕ РєСѓСЂСЃСѓ
     private ShapeForm shapeBelow(int x, int y)
     {
         return forms[y * BOARD_WIDTH + x];
     }
 
-    // удаляет успешно заполненные строки, начисляет очки
+    // СѓРґР°Р»СЏРµС‚ СѓСЃРїРµС€РЅРѕ Р·Р°РїРѕР»РЅРµРЅРЅС‹Рµ СЃС‚СЂРѕРєРё, РЅР°С‡РёСЃР»СЏРµС‚ РѕС‡РєРё
     private void dropFullLines()
     {
         for (int i = BOARD_HEIGHT - 1; i >= 0; --i) {
