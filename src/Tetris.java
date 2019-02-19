@@ -43,7 +43,7 @@ public class Tetris extends JPanel
     private Shape currentShape; // падающая фигура
     private ShapeForm[] forms; //массив фигур, упавших на доску
     private JLabel scoreLabel;
-    JLabel gameOverLabel;
+    private JLabel gameOverLabel;
 
     Tetris()
     {
