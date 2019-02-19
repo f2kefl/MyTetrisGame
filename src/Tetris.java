@@ -1,11 +1,10 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-
+/* Create by Nikita 10.06.2016
+   Игра тетрис, главный класс (механика и точка запуска программы)
+ */
 class MyFrame extends JFrame
 {
     private MyFrame()
@@ -28,21 +27,23 @@ class MyFrame extends JFrame
 
 public class Tetris extends JPanel
 {
+    // константы
     static final int MAX_SIZE = 6; // максимальное кол-во точек в фигуре
-    private static final int BOARD_WIDTH = 15;
-    private static final int BOARD_HEIGHT = 20;
-    private static final int SQUARE_SIZE = 15;
-
-    private Timer tmDraw;
-    private boolean isFell = false;
-    private boolean isStarted = false;
-    private boolean game_is_over = false;
+    private static final int SQUARE_SIZE = 15; // размер квадрата (пикселей)
+    private static final int BOARD_WIDTH = 15; // ширина поля (квадратов)
+    private static final int BOARD_HEIGHT = 20; // длина поля (квадратов)
+    // переменные
+    private Timer tmDraw; // время обновления доски (мс)
+    private boolean isFell = false;// упала ли фигура
+    private boolean isStarted = false; // падает ли фигура
+    private boolean gameOver = false; // закончилась ли игра
     private int curX = 0; // положение текущей фигуры на доске
     private int curY = 0;
-    private int score = 0; // считается как число удалённых квадратов (30 за линию)
-    private Shape currentShape;
-    private ShapeForm[] forms; //массив форм фигур, упавших на доску
-    private JLabel lb;
+    private int score = 0; // считается как число удалённых c поля квадратов (30 за линию)
+    private Shape currentShape; // падающая фигура
+    private ShapeForm[] forms; //массив фигур, упавших на доску
+    private JLabel scoreLabel;
+    JLabel gameOverLabel;
 
     Tetris()
     {
@@ -51,16 +52,19 @@ public class Tetris extends JPanel
                 isFell = false;
                 newShape();
             }
-            else if(!game_is_over) oneLineDown();
+            else if(!gameOver) oneLineDown();
+            if (gameOver){
+                gameOverLabel.setText("GAME OVER");
+            }
         });
         setFocusable(true);
         setLayout(null);
 
-        lb = new JLabel("Score: " + score);
-        lb.setForeground(Color.DARK_GRAY);
-        lb.setFont(new Font("comic sans MS", Font.PLAIN, 16));
-        lb.setBounds(243, 130, 130, 40);
-        add(lb);
+        scoreLabel = new JLabel("Score: " + score);
+        scoreLabel.setForeground(Color.DARK_GRAY);
+        scoreLabel.setFont(new Font("comic sans MS", Font.PLAIN, 16));
+        scoreLabel.setBounds(243, 130, 130, 40);
+        add(scoreLabel);
 
         JButton btn1 = new JButton("New Game");
         btn1.setForeground(new Color(47, 126, 154));
@@ -75,6 +79,12 @@ public class Tetris extends JPanel
         btn2.setBounds(243, 260, 105, 30);
         btn2.addActionListener(arg0 -> System.exit(0));
         add(btn2);
+
+        gameOverLabel = new JLabel("");
+        gameOverLabel.setForeground(new Color(190, 0, 12));
+        gameOverLabel.setFont(new Font("comic sans MS", Font.BOLD, 20));
+        gameOverLabel.setBounds(232, 90, 130, 40);
+        add(gameOverLabel);
 
         currentShape = new Shape();
 
@@ -113,11 +123,12 @@ public class Tetris extends JPanel
     private void start()
     {
         grabFocus();
-        game_is_over = false;
+        gameOver = false;
         isStarted = true;
         isFell = false;
         score = 0;
-        lb.setText("Score: " + score);
+        gameOverLabel.setText("");
+        scoreLabel.setText("Score: " + score);
         clearBoard();
         newShape();
         tmDraw.start();
@@ -140,7 +151,7 @@ public class Tetris extends JPanel
 
         if (!tryMove(currentShape, curX, curY-1)) {
             isStarted = false;
-            game_is_over = true;
+            gameOver = true;
         }
     }
 
@@ -178,7 +189,7 @@ public class Tetris extends JPanel
         gr.drawLine(x + 1, y + SQUARE_SIZE - 1, x + SQUARE_SIZE - 1, y + SQUARE_SIZE - 1);
         gr.drawLine(x + SQUARE_SIZE - 1, y + SQUARE_SIZE - 1, x + SQUARE_SIZE - 1, y + 1);
     }
-
+    // рисует доску и соединяет квадраты в фигуры
     @Override
     public void paint(Graphics gr)
     {
@@ -188,7 +199,7 @@ public class Tetris extends JPanel
         gr.fillRect(0, 0, 226, 301);
 
         gr.setColor(new Color(155, 155, 155));
-        for (int i = 0; i <= BOARD_WIDTH; i++) // колодец BOARD_HEIGHT в высоту, BOARD_WIDTH в ширину, клетка 10 на 10
+        for (int i = 0; i <= BOARD_WIDTH; i++) // доска BOARD_HEIGHT * BOARD_WIDTH площадью, клетка 10 на 10
         {
             gr.drawLine(i * SQUARE_SIZE, 0, i * SQUARE_SIZE, 301);
             for (int j = 0; j <= BOARD_HEIGHT; j++) {
@@ -211,15 +222,6 @@ public class Tetris extends JPanel
                 int x = curX + currentShape.getX(i);
                 int y = curY - currentShape.getY(i);
                 drawSquare(gr, x * SQUARE_SIZE, (BOARD_HEIGHT - y - 1) * SQUARE_SIZE);
-            }
-        }
-
-        if (game_is_over){
-            try {
-                BufferedImage gameOver = ImageIO.read(getClass().getResourceAsStream("/end_game.png"));
-                gr.drawImage(gameOver, 0, 0, null);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -280,7 +282,7 @@ public class Tetris extends JPanel
                     }
                 }
                 score += 30;
-                lb.setText("Score: " + score);
+                scoreLabel.setText("Score: " + score);
                 isFell = true;
             }
         }
