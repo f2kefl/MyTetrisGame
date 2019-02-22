@@ -14,7 +14,7 @@ class Shape
         setShape();
     }
 
-    // метод задаёт форму для фигуры, меняя текущий массив координат формы на нужный.
+    // метод задаёт форму для фигуры, меняя текущий массив координат формы на нужный
     private void setShape()
     {
         for (int i = 0; i < Tetris.MAX_SIZE; i++) {
@@ -33,14 +33,14 @@ class Shape
         currentForm = shapes[r];
     }
 
-    // метод вращает фигуру вокруг оси по направлению часовой стрелки.
+    // метод вращает фигуру вокруг оси по направлению часовой стрелки
     Shape turn()
     {
         Shape result = new Shape();
         result.currentForm = currentForm;
 
-        for (int i = 0; i < Tetris.MAX_SIZE; i++) {
-            result.setX(i, -getY(i));
+        for (int i = 0; i < Tetris.MAX_SIZE; i++) { // проходим по всем возможным квадратам фигуры циклом
+            result.setX(i, -getY(i)); // и меняет их на следующие по направлению часовой стрелки
             result.setY(i, getX(i));
         }
 
@@ -52,7 +52,7 @@ class Shape
     {
         int m = coordinates[0][1];
 
-        for (int i = 0; i < Tetris.MAX_SIZE; i++) {
+        for (int i = 0; i < Tetris.MAX_SIZE; i++) { // цикл, проходя по всем координатам формы, вычисляет наименьшее значение функцией Math.min()
             m = Math.min(m, coordinates[i][1]);
         }
 
